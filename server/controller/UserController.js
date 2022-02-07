@@ -2,21 +2,22 @@ import bcrypt from 'bcrypt';
 const SALT_ROUND = 10;
 
 const signup = async (req, res) => {
-    const { username,email, user_password,user_handphone } = req.body;
+    const { username,email, password,handphone } = req.body;
 
-    let hashPassword = user_password;
+    let hashPassword = password;
     hashPassword = await bcrypt.hash(hashPassword, SALT_ROUND);
     try {
         const result = await req.context.models.users.create({
             user_name : username,
             user_email : email,
             user_password: hashPassword,
-            user_handphone : user_handphone
-
-
-        }
-
-        );
+            user_handphone : handphone,
+            user_roles :{
+                usro_role_id:5
+            }
+        },{
+            include:req.context.models.user_roles
+        });
         const {user_name,user_email} = result.dataValues;
         res.send({user_name,user_email});
     } catch (error) {
