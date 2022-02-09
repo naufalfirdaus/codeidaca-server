@@ -1,5 +1,9 @@
 import UserController from "./UserController"
+import TalentPlacement from "./TalentPlacementController"
+import ClientController from "./ClientController"
 
-export default{
+export default {
     UserController,
+    TalentPlacement,
+    ClientController
 }

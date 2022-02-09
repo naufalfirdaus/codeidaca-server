@@ -6,10 +6,10 @@ import cors from "cors";
 import compress from 'compression';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
-import middleware  from "./helpers/middleware";
+import middleware from "./helpers/middleware";
 
 //for access models to db
-import models,{sequelize} from "./models/init-models";
+import models, { sequelize } from "./models/init-models";
 import routes from './routes/IndexRoute'
 
 // declare port
@@ -28,8 +28,8 @@ app.use(compress())
 app.use(cors());
 
 // load models dan simpan di req.context
-app.use(async (req,res,next) =>{
-    req.context = {models};
+app.use(async (req, res, next) => {
+    req.context = { models };
     next();
 });
 
@@ -42,7 +42,10 @@ app.use(async (req,res,next) =>{
 
 
 // call routes
-app.use(config.URL_DOMAIN+"/auth",routes.UserRoute)
+app.use(config.URL_DOMAIN + "/auth", routes.UserRoute)
+app.use(config.URL_API + "/placement", routes.TalentPlacement)
+app.use(config.URL_API + "/client", routes.ClientRoute)
+
 
 
 //use middleware to handle error from others modules
@@ -53,12 +56,12 @@ app.use(middleware.notFound);
 // set to false agar tidak di drop tables yang ada didatabase
 const dropDatabaseSync = false;
 
-sequelize.sync({force : dropDatabaseSync}).then(async ()=>{
-    if(dropDatabaseSync){
+sequelize.sync({ force: dropDatabaseSync }).then(async () => {
+    if (dropDatabaseSync) {
         console.log("Database do not drop");
     }
 
-    app.listen(port,()=>{
+    app.listen(port, () => {
         console.log(`Server is listening on port ${port}`)
     });
 
