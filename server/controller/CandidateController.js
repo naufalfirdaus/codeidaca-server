@@ -12,11 +12,12 @@ const findCandidate = async (req, res) => {
             tale_graduate,	
             tale_handphone,
             tale_bootcamp,
-            tati_timeline_name,
-            tati_date
+            tale_status_timeline,
+            tale_timeline_date,
+            tati_date as date_applied
         from talent t
         inner join talent_timeline tt on t.tale_id = tt.tati_tale_id
-        where t.tale_status = 'Candidate';`, {
+        where t.tale_status = 'Candidate' and tt.tati_timeline_name = 'Apply';`, {
         type: sequelize.QueryTypes.SELECT,
         model: req.context.models.talent,
         mapToModel: true
@@ -35,11 +36,12 @@ const findCandidateApply = async (req, res) => {
             tale_graduate,	
             tale_handphone,
             tale_bootcamp,
-            tati_timeline_name,
-            tati_date
+            tale_status_timeline,
+            tale_timeline_date,
+            tati_date as date_applied
         from talent t
-        left join talent_timeline tt on t.tale_id = tt.tati_tale_id
-        where t.tale_status = 'Candidate' and tt.tati_timeline_name = 'Apply';`, {
+        inner join talent_timeline tt on t.tale_id = tt.tati_tale_id
+        where t.tale_status = 'Candidate' and tt.tati_timeline_name = 'Apply' and t.tale_status_timeline = 'Apply';`, {
         type: sequelize.QueryTypes.SELECT,
         model: req.context.models.talent,
         mapToModel: true
@@ -57,11 +59,12 @@ const findCandidateFiltering = async (req, res) => {
             tale_graduate,	
             tale_handphone,
             tale_bootcamp,
-            tati_timeline_name,
-            tati_date
+            tale_status_timeline,
+            tale_timeline_date,
+            tati_date as date_applied
         from talent t
-        left join talent_timeline tt on t.tale_id = tt.tati_tale_id
-        where t.tale_status = 'Candidate' and tt.tati_timeline_name = 'Filtering Test';`, {
+        inner join talent_timeline tt on t.tale_id = tt.tati_tale_id
+        where t.tale_status = 'Candidate' and tt.tati_timeline_name = 'Apply' and t.tale_status_timeline = 'Filtering Test';`, {
         type: sequelize.QueryTypes.SELECT,
         model: req.context.models.talent,
         mapToModel: true
@@ -79,11 +82,12 @@ const findCandidateContract = async (req, res) => {
             tale_graduate,	
             tale_handphone,
             tale_bootcamp,
-            tati_timeline_name,
-            tati_date
+            tale_status_timeline,
+            tale_timeline_date,
+            tati_date as date_applied
         from talent t
-        left join talent_timeline tt on t.tale_id = tt.tati_tale_id
-        where t.tale_status = 'Candidate' and tt.tati_timeline_name = 'Contract';`, {
+        inner join talent_timeline tt on t.tale_id = tt.tati_tale_id
+        where t.tale_status = 'Candidate' and tt.tati_timeline_name = 'Apply' and t.tale_status_timeline = 'Contract';`, {
         type: sequelize.QueryTypes.SELECT,
         model: req.context.models.talent,
         mapToModel: true
@@ -101,11 +105,12 @@ const findCandidateBriefing = async (req, res) => {
             tale_graduate,	
             tale_handphone,
             tale_bootcamp,
-            tati_timeline_name,
-            tati_date
+            tale_status_timeline,
+            tale_timeline_date,
+            tati_date as date_applied
         from talent t
-        left join talent_timeline tt on t.tale_id = tt.tati_tale_id
-        where t.tale_status = 'Candidate' and tt.tati_timeline_name = 'Briefing Bootcamp';`, {
+        inner join talent_timeline tt on t.tale_id = tt.tati_tale_id
+        where t.tale_status = 'Candidate' and tt.tati_timeline_name = 'Apply' and t.tale_status_timeline = 'Briefing Bootcamp';`, {
         type: sequelize.QueryTypes.SELECT,
         model: req.context.models.talent,
         mapToModel: true
@@ -123,11 +128,12 @@ const findCandidateJoin = async (req, res) => {
             tale_graduate,	
             tale_handphone,
             tale_bootcamp,
-            tati_timeline_name,
-            tati_date
+            tale_status_timeline,
+            tale_timeline_date,
+            tati_date as date_applied
         from talent t
-        left join talent_timeline tt on t.tale_id = tt.tati_tale_id
-        where t.tale_status = 'Candidate' and tt.tati_timeline_name = 'Join Bootcamp';`, {
+        inner join talent_timeline tt on t.tale_id = tt.tati_tale_id
+        where t.tale_status = 'Candidate' and tt.tati_timeline_name = 'Apply' and t.tale_status_timeline = 'Join Bootcamp';`, {
         type: sequelize.QueryTypes.SELECT,
         model: req.context.models.talent,
         mapToModel: true
@@ -135,14 +141,37 @@ const findCandidateJoin = async (req, res) => {
     return res.send(result);
 }
 
+const UpdateTimelineStatus = async (req, res, next) => {
+    const { timeline_status } = req.body;
+    try{
+        const result = await req.context.models.talent.update(
+            { 
+                tale_status_timeline: timeline_status,
+                tale_timeline_date : new Date()
+            },
+            {
+                returning: true,
+                where: { tale_id: req.params.id }
+            }
+        );
+        next();
+    }catch (error) {
+        res.status(404).json({message : error.message})
+    }
+}
+
 const createRowTimeline = async (req, res) => {
-    const { tale_id, timeline_name } = req.body;
-    const result = await req.context.models.talent_timeline.create({
-        tati_tale_id: tale_id,
-        tati_timeline_name: timeline_name,
-        tati_date: new Date()
-    });
-    return res.send(result);
+    const { timeline_status } = req.body;
+    try{
+        const result = await req.context.models.talent_timeline.create({
+            tati_tale_id: req.params.id,
+            tati_timeline_name: timeline_status,
+            tati_date: new Date()
+        });
+        return res.send(result);
+    }catch(error) {
+        res.status(404).json({message : error.message})
+    }
 }
 
 
@@ -153,5 +182,6 @@ export default{
     findCandidateContract,
     findCandidateBriefing,
     findCandidateJoin,
+    UpdateTimelineStatus,
     createRowTimeline
 }

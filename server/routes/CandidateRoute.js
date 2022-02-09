@@ -11,7 +11,7 @@ router.get("/contract",IndexController.CandidateController.findCandidateContract
 router.get("/briefing",IndexController.CandidateController.findCandidateBriefing);
 router.get("/join",IndexController.CandidateController.findCandidateJoin);
 
-// post
-router.post("/",IndexController.CandidateController.createRowTimeline);
+// put
+router.put("/:id",IndexController.CandidateController.UpdateTimelineStatus,IndexController.CandidateController.createRowTimeline);
 
 export default router;
