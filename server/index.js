@@ -7,7 +7,6 @@ import compress from 'compression';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import middleware  from "./helpers/middleware";
-
 //for access models to db
 import models,{sequelize} from "./models/init-models";
 import routes from './routes/IndexRoute'
@@ -33,17 +32,10 @@ app.use(async (req,res,next) =>{
     next();
 });
 
-/*  app.use(process.env.URL_DOMAIN,(req,res)=>{
-    res.send("Hello Eshopay");
-});  */
-
-
-//auth.setMiddleware(app);
-
-
 // call routes
 app.use(config.URL_DOMAIN+"/auth",routes.UserRoute)
-
+app.use(config.URL_DOMAIN+"/bootcamp",routes.CampDetailRoute)
+app.use(config.URL_DOMAIN+"/batch",routes.BatchRoute)
 
 //use middleware to handle error from others modules
 app.use(middleware.handleError);
