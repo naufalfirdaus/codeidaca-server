@@ -1,100 +1,47 @@
 import { sequelize } from "../models/init-models";
-
+const { Op } = require("sequelize");
 
 const findBatch = async (req, res) => {
-    const result = await sequelize.query(
-        `select
-            batch_id,
-            batch_name,
-            batch_technology,
-            taba_tale_id,
-            tale_photo,
-            batch_start_date,
-            batch_end_date,
-            inst_name,
-            batch_status
-        from batch b 
-        inner join talent_batch tb on b.batch_id = tb.taba_batch_id
-        inner join instructor i on b.batch_inst_id = i.inst_id
-        inner join talent t on tb.taba_tale_id = t.tale_id
-        where taba_drop = false;`, {
-        type: sequelize.QueryTypes.SELECT,
-        model: req.context.models.batch,
-        mapToModel: true
-    });
-    return res.send(result);
+    try {
+        const result = await req.context.models.batch.findAll({
+            attributes: ['batch_id', 
+                        'batch_name',
+                        'batch_technology',
+                        'batch_start_date',
+                        'batch_end_date',
+                        'batch_status'],
+            include:[
+                {
+                    model: req.context.models.talent_batch,
+                    as: 'talent_batches',
+                    attributes: [
+                        'taba_tale_id'
+                    ],
+                    where:{
+                        taba_drop: false
+                    },
+                    include:{
+                        model: req.context.models.talent,
+                        as: 'taba_tale',
+                        attributes: [
+                            'tale_photo'
+                        ]
+                    }
+                },
+                {
+                    model: req.context.models.instructor,
+                    as: 'batch_inst',
+                    attributes: [
+                        'inst_name'
+                    ]
+                }
+            ]
+        });
+        return res.send(result)
+    } catch (error) {
+        res.status(404).json({message : error.message})
+    }
 }
-
-const findBatchNew = async (req, res) => {
-    const result = await sequelize.query(
-        `select
-            batch_id,
-            batch_name,
-            batch_technology,
-            taba_tale_id,
-            tale_photo,
-            batch_start_date,
-            batch_end_date,
-            inst_name,
-            batch_status
-        from batch b 
-        inner join talent_batch tb on b.batch_id = tb.taba_batch_id
-        inner join instructor i on b.batch_inst_id = i.inst_id
-        inner join talent t on tb.taba_tale_id = t.tale_id
-        where taba_drop = false and batch_status = 'new';`, {
-        type: sequelize.QueryTypes.SELECT,
-        model: req.context.models.batch,
-        mapToModel: true
-    });
-    return res.send(result);
-}
-const findBatchRunning = async (req, res) => {
-    const result = await sequelize.query(
-        `select
-            batch_id,
-            batch_name,
-            batch_technology,
-            taba_tale_id,
-            tale_photo,
-            batch_start_date,
-            batch_end_date,
-            inst_name,
-            batch_status
-        from batch b 
-        inner join talent_batch tb on b.batch_id = tb.taba_batch_id
-        inner join instructor i on b.batch_inst_id = i.inst_id
-        inner join talent t on tb.taba_tale_id = t.tale_id
-        where taba_drop = false and batch_status = 'running';`, {
-        type: sequelize.QueryTypes.SELECT,
-        model: req.context.models.batch,
-        mapToModel: true
-    });
-    return res.send(result);
-}
-const findBatchClosed = async (req, res) => {
-    const result = await sequelize.query(
-        `select
-            batch_id,
-            batch_name,
-            batch_technology,
-            taba_tale_id,
-            tale_photo,
-            batch_start_date,
-            batch_end_date,
-            inst_name,
-            batch_status
-        from batch b 
-        inner join talent_batch tb on b.batch_id = tb.taba_batch_id
-        inner join instructor i on b.batch_inst_id = i.inst_id
-        inner join talent t on tb.taba_tale_id = t.tale_id
-        where taba_drop = false and batch_status = 'closed';`, {
-        type: sequelize.QueryTypes.SELECT,
-        model: req.context.models.batch,
-        mapToModel: true
-    });
-    return res.send(result);
-}
-
 
 const UpdateBatchStatus = async (req, res) => {
     const { batch_status } = req.body;
@@ -111,6 +58,21 @@ const UpdateBatchStatus = async (req, res) => {
         return res.send(result);
     }catch (error) {
         res.status(404).json({message : error.message})
+    }
+}
+
+const deleteBatch = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const result_taba = await req.context.models.talent_batch.destroy({
+            where: { taba_batch_id: parseInt(id) }
+        });
+        const result = await req.context.models.batch.destroy({
+            where: { batch_id: parseInt(id) }
+        });
+        return res.send("delete " + result + " rows.")
+    } catch (error) {
+        return res.sendStatus(404).send("Data not found.")
     }
 }
 
@@ -161,7 +123,12 @@ const UpdateMembers = async (req, res) => {
             },
             {
                 returning: true,
-                where: { taba_batch_id: req.params.id, taba_batch_id: taba_tale_id }
+                where: { 
+                    [Op.and]: [
+                        {taba_batch_id: req.params.id },
+                        {taba_tale_id: taba_tale_id }
+                    ]
+                }
             }
         );
         return res.send(result);
@@ -175,10 +142,8 @@ const UpdateMembers = async (req, res) => {
 
 export default{
     findBatch,
-    findBatchNew,
-    findBatchRunning,
-    findBatchClosed,
     UpdateBatchStatus,
     UpdateBatch,
-    UpdateMembers
+    UpdateMembers,
+    deleteBatch
 }
