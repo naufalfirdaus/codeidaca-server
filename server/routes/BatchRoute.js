@@ -5,6 +5,6 @@ const router = Router();
 router.get("/",IndexController.BatchController.findAllRows);
 router.get("/talent",IndexController.BatchController.findTalentBatch);
 router.get("/batch",IndexController.BatchController.findBatch);
-router.post("/",IndexController.BatchController.createBatch,IndexController.BatchController.createTalentBatch);
+router.post("/",IndexController.BatchController.createBatch,IndexController.BatchController.updateCurriculumData,IndexController.BatchController.updateTalent,IndexController.BatchController.createTalentBatch);
 export default router;
 
