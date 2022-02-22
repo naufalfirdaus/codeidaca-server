@@ -32,6 +32,51 @@ const findBatch = async (req, res) => {
                     model: req.context.models.instructor,
                     as: 'batch_inst',
                     attributes: [
+                        'inst_id',
+                        'inst_name'
+                    ]
+                }
+            ]
+        });
+        return res.send(result)
+    } catch (error) {
+        res.status(404).json({message : error.message})
+    }
+}
+
+const findBatchById = async (req, res) => {
+    try {
+        const result = await req.context.models.batch.findAll({
+            attributes: ['batch_id', 
+                        'batch_name',
+                        'batch_technology',
+                        'batch_start_date',
+                        'batch_end_date',
+                        'batch_status'],
+            where:{batch_id: req.params.id},
+            include:[
+                {
+                    model: req.context.models.talent_batch,
+                    as: 'talent_batches',
+                    attributes: [
+                        'taba_tale_id'
+                    ],
+                    where:{
+                        taba_drop: false
+                    },
+                    include:{
+                        model: req.context.models.talent,
+                        as: 'taba_tale',
+                        attributes: [
+                            'tale_photo'
+                        ]
+                    }
+                },
+                {
+                    model: req.context.models.instructor,
+                    as: 'batch_inst',
+                    attributes: [
+                        'inst_id',
                         'inst_name'
                     ]
                 }
@@ -76,21 +121,6 @@ const deleteBatch = async (req, res) => {
     }
 }
 
-
-// Update App Batch
-/* 
-req.body = {
-    batch_name,
-    batch_technology,
-    taba_tale_id,
-    taba_drop
-    batch_start_date,
-    batch_end_date,
-    batch_inst_id,
-}
-*/
-
-// 1
 const UpdateBatch = async (req, res, next) => {
     const {batch_name, batch_technology, batch_start_date, batch_end_date, batch_inst_id} = req.body;
     try{
@@ -104,7 +134,7 @@ const UpdateBatch = async (req, res, next) => {
             },
             {
                 returning: true,
-                where: { batch_id: req.params.id }
+                where: { batch_id: parseInt(req.params.id) }
             }
         );
         next()
@@ -113,25 +143,53 @@ const UpdateBatch = async (req, res, next) => {
     }
 }
 
-// 2
-const UpdateMembers = async (req, res) => {
-    const {taba_tale_id, taba_drop} = req.body;
+const AddMembers = async (req, res) => {
+    const {talent_batches} = req.body;
+    const batch = req.params.id
     try{
-        const result = await req.context.models.talent_batch.update(
-            { 
-                taba_drop: taba_drop
+        const tabaList = await req.context.models.talent_batch.findAll()
+
+        const batchTabaList = tabaList.filter(el=>el.dataValues.taba_batch_id===parseInt(batch)).map(el=>el.dataValues.taba_tale_id)
+
+        await req.context.models.talent_batch.update(
+            {
+                taba_drop: true,
+                taba_drop_date: new Date()
             },
             {
                 returning: true,
                 where: { 
-                    [Op.and]: [
-                        {taba_batch_id: req.params.id },
-                        {taba_tale_id: taba_tale_id }
-                    ]
+                    taba_batch_id: parseInt(batch)
                 }
             }
-        );
-        return res.send(result);
+        )
+
+        await talent_batches.map(el=>{
+            if(batchTabaList.includes(el.tale_id)){
+                req.context.models.talent_batch.update(
+                    {
+                        taba_drop: false,
+                        taba_drop_date: null
+                    },
+                    {
+                        returning: true,
+                        where: { 
+                            taba_batch_id: parseInt(batch),
+                            taba_tale_id: parseInt(el.tale_id),
+                        }
+                    }
+                )
+            }else{
+                req.context.models.talent_batch.create(
+                    {
+                        taba_drop: false,
+                        taba_tale_id: el.tale_id,
+                        taba_batch_id: parseInt(batch)
+                    }
+                )
+            }
+        })      
+        return res.send("Update Batch Succeed");
     }catch (error) {
         res.status(404).json({message : error.message})
     }
@@ -140,10 +198,12 @@ const UpdateMembers = async (req, res) => {
 
 
 
+
 export default{
     findBatch,
+    findBatchById,
     UpdateBatchStatus,
+    deleteBatch,
     UpdateBatch,
-    UpdateMembers,
-    deleteBatch
+    AddMembers
 }

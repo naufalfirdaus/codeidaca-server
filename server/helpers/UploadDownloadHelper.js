@@ -96,6 +96,15 @@ const showProductImage = async (req, res) => {
 }
 
 
+const showTalentPhoto = async (req, res) => {
+    const filename = req.params.filename;
+    const url = `${process.cwd()}/${config.UPLOAD_DIR}/${filename}`;
+    fs.createReadStream(url)
+        .on("error", () => responseNotFound(req, res))
+        .pipe(res);
+}
+
+
 function responseNotFound(req, res) {
     res.writeHead(404, { "Content-Type": "text/plain" });
     res.end("Not Found")
@@ -105,5 +114,6 @@ function responseNotFound(req, res) {
 export default {
     uploadSingleFile,
     showProductImage,
-    uploadMultipleFile
+    uploadMultipleFile,
+    showTalentPhoto
 }

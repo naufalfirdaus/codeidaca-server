@@ -45,6 +45,8 @@ app.use(async (req,res,next) =>{
 app.use(config.URL_DOMAIN+"/auth",routes.UserRoute)
 app.use(config.URL_API+"/candidat",routes.CandidateRoute)
 app.use(config.URL_API+"/batch",routes.BatchRoute)
+app.use(config.URL_API+"/instructor",routes.InstructorRoute)
+app.use(config.URL_API+"/talent",routes.TalentRoute)
 
 
 //use middleware to handle error from others modules
