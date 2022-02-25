@@ -20,12 +20,14 @@ const findBatch = async (req, res) => {
                     where:{
                         taba_drop: false
                     },
+                    required:false,
                     include:{
                         model: req.context.models.talent,
                         as: 'taba_tale',
                         attributes: [
                             'tale_photo'
-                        ]
+                        ],
+                        required:false
                     }
                 },
                 {
@@ -34,7 +36,8 @@ const findBatch = async (req, res) => {
                     attributes: [
                         'inst_id',
                         'inst_name'
-                    ]
+                    ],
+                    required:false
                 }
             ]
         });
@@ -64,12 +67,14 @@ const findBatchById = async (req, res) => {
                     where:{
                         taba_drop: false
                     },
+                    required:false,
                     include:{
                         model: req.context.models.talent,
                         as: 'taba_tale',
                         attributes: [
                             'tale_photo'
-                        ]
+                        ],
+                        required:false
                     }
                 },
                 {
@@ -78,7 +83,8 @@ const findBatchById = async (req, res) => {
                     attributes: [
                         'inst_id',
                         'inst_name'
-                    ]
+                    ],
+                    required:false
                 }
             ]
         });
@@ -147,9 +153,10 @@ const AddMembers = async (req, res) => {
     const {talent_batches} = req.body;
     const batch = req.params.id
     try{
-        const tabaList = await req.context.models.talent_batch.findAll()
-
-        const batchTabaList = tabaList.filter(el=>el.dataValues.taba_batch_id===parseInt(batch)).map(el=>el.dataValues.taba_tale_id)
+        const batchTabaList = await req.context.models.talent_batch.findAll({
+            attributes: ['taba_tale_id'],
+            where: {taba_batch_id: parseInt(batch)},
+        }).map(el=>el.dataValues.taba_tale_id)
 
         await req.context.models.talent_batch.update(
             {
