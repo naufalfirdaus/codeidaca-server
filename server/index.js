@@ -45,7 +45,7 @@ app.use(async (req, res, next) => {
 app.use(config.URL_DOMAIN + "/auth", routes.UserRoute)
 app.use(config.URL_API + "/placement", routes.TalentPlacement)
 app.use(config.URL_API + "/client", routes.ClientRoute)
-
+app.use(config.URL_API + "/detail", routes.TalentDetail)
 
 
 //use middleware to handle error from others modules

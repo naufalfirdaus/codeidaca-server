@@ -5,9 +5,6 @@ const router = Router();
 
 // get
 router.get("/", IndexController.ClientController.findNameClient);
-
-
-// post
-// router.post("/", IndexController.TalentPlacement.getPlaceOrder, IndexController.TalentPlacement.createPlacement);
+router.get("/:id", IndexController.ClientController.findClient);
 
 export default router;

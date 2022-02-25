@@ -4,10 +4,8 @@ import IndexController from "../controller/IndexController";
 const router = Router();
 
 // get
+router.get("/:id", IndexController.TalentDetail.findTalentReview)
 
-// post
-router.post("/idle", IndexController.TalentPlacement.createSwitchIdle,
-    IndexController.TalentPlacement.UpdateStatus
-);
+
 
 export default router;
