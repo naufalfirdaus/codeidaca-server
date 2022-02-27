@@ -29,7 +29,7 @@ const uploadSingleFile = async (req, res, next) => {
         .on('field', (fieldName, value) => {
             fields.push({ fieldName, value });
         })
-        .once('file', (fieldName, file) => {
+        .on('file', (fieldName, file) => {
             files.push({ fieldName, file });
             //files = { ...{ fieldName, file } }
         })
@@ -95,6 +95,15 @@ const showProductImage = async (req, res) => {
         .pipe(res);
 }
 
+const showFile = async (req, res) => {
+    const filename = req.params.filename;
+    const url = `${process.cwd()}/${config.UPLOAD_DIR}/${filename}`;
+    fs.createReadStream(url)
+        .on("error", () => responseNotFound(req, res))
+        .pipe(res);
+}
+
+
 
 function responseNotFound(req, res) {
     res.writeHead(404, { "Content-Type": "text/plain" });
@@ -105,5 +114,6 @@ function responseNotFound(req, res) {
 export default {
     uploadSingleFile,
     showProductImage,
-    uploadMultipleFile
+    uploadMultipleFile,
+    showFile
 }

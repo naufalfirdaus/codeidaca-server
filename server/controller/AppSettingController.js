@@ -37,12 +37,6 @@ const createData = async (req, res) => {
 }
 
 const findById = async (req, res) => {
-    // const id = req.params.id
-    // const result = await req.context.models.talent.findOne({
-    //     where: { tale_id: id }
-    // });
-    // return res.send(result);
-
     try {
         const result = await req.context.models.talent.findOne({
             where: { tale_user_id: req.params.id }
@@ -54,21 +48,8 @@ const findById = async (req, res) => {
 }
 
 const updateTalent = async (req, res) => {
-    // try {
-    //     const singlePart = await UploadDownloadHelper.uploadSingleFile(req);
-    //     const { attrb: { files, fields,  }, status: { status } } = singlePart;
-    //     console.log(status)
-
     const { files, fields } = req.fileAttrb;
-    //let data = files[0].fieldName || undefined ;
-    //let data1 = files[1].fieldName || undefined;
-    // let hasil = files.length
-    // console.log(hasil);
-    // if(data === "tale_resume"){
-    //      hasil = "bener"
-    // }else{
-    //      hasil = "salah"
-    // }
+    
     if (files.length === 2) {
         try {
             const result = await req.context.models.talent.update({
@@ -86,9 +67,6 @@ const updateTalent = async (req, res) => {
                 tale_tag_skill: fields[11].value,
                 tale_resume: files[0].file.originalFilename,
                 tale_candidat_resume: files[1].file.originalFilename,
-
-                //tale_photo: files[2].file.newFilename
-
             }, { returning: true, where: { tale_user_id: parseInt(req.params.id) } });
             return res.send(result);
         } catch (error) {
@@ -110,9 +88,6 @@ const updateTalent = async (req, res) => {
                 tale_province: fields[10].value,
                 tale_tag_skill: fields[11].value,
                 tale_resume: files[0].file.originalFilename,
- 
-                //tale_photo: files[2].file.newFilename
-
             }, { returning: true, where: { tale_user_id: parseInt(req.params.id) } });
             return res.send(result);
         } catch (error) {
@@ -134,9 +109,6 @@ const updateTalent = async (req, res) => {
                 tale_province: fields[10].value,
                 tale_tag_skill: fields[11].value,
                 tale_candidat_resume: files[0].file.originalFilename,
-
-                //tale_photo: files[2].file.newFilename
-
             }, { returning: true, where: { tale_user_id: parseInt(req.params.id) } });
             return res.send(result);
         } catch (error) {
