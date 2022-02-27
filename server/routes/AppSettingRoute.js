@@ -4,9 +4,14 @@ import UploadDownloadHelper from '../helpers/UploadDownloadHelper'
 
 const router = Router()
 
-router.post("/", UploadDownloadHelper.uploadMultipleFile, IndexController.AppSettingController.createData)
+// router.post("/", UploadDownloadHelper.uploadMultipleFile, IndexController.AppSettingController.createData)
 router.get("/:id", IndexController.AppSettingController.findById)
-router.put("/:id", IndexController.AppSettingController.updateTalent)
+router.get("/resume/:filename", UploadDownloadHelper.showFile)
+router.get("/images/:filename", UploadDownloadHelper.showProductImage);
+
+//router.put("/:id", UploadDownloadHelper.uploadMultipleFile, IndexController.AppSettingController.updateTalent2)
+router.put("/:id",  UploadDownloadHelper.uploadSingleFile,IndexController.AppSettingController.updateTalent)
+router.put("/data/:id", IndexController.AppSettingController.updateTalentNoFile)
 
 
 export default router;
