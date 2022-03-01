@@ -1,6 +1,8 @@
 const findAllRows = async (req, res, next) => {
   try {
-    const talent = await req.context.models.talent.findAll();
+    const talent = await req.context.models.talent.findAll({
+      where: { tale_status : "Candidate" },
+    });
     const instructor = await req.context.models.instructor.findAll();
     const curriculum = await req.context.models.curriculum.findAll();
     const result = { talent, instructor, curriculum };
@@ -36,6 +38,7 @@ const createBatch = async (req, res, next) => {
     batch_inst_id,
     batch_start_date,
     batch_end_date,
+    batch_type,
     diffDay
   } = req.body;
   try {
@@ -46,10 +49,12 @@ const createBatch = async (req, res, next) => {
       batch_end_date: batch_end_date,
       batch_duration:parseInt(diffDay),
       batch_status: "new",
+      batch_type:batch_type,
       batch_inst_id: parseInt(batch_inst_id),
     });
     req.batch_id = result.dataValues;
     next();
+    return res.send("success");
   } catch (error) {
     return res.send("error");
   }
@@ -99,15 +104,13 @@ const updateTalent = async (req, res, next) => {
     batch_end_date,
     talentCheck,
   } = req.body;
-
-  console.log(talentCheck[0].tale_id);
-
   try {
     for (let j = 0; j < talentCheck.length; j++) {
 
       await req.context.models.talent.update(
         {
-         tale_bootcamp:batch_technology
+         tale_bootcamp:batch_technology,
+         tale_status:"Talent"
         },
         {
           where: { tale_id: talentCheck[j].tale_id },
@@ -148,7 +151,7 @@ const createTalentBatch = async (req, res, next) => {
         taba_batch_id: parseInt(batch_id),
       });
     }
-    return res.send(result);
+    // return res.send(result);
   } catch (error) {
     return res.status(404).json({
       messagecreateTalentBatch: error.message,
