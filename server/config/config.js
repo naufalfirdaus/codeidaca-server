@@ -4,7 +4,7 @@ const config = {
     jwtSecret: process.env.JWT_SECRET || "YOUR_secret_key",
     db_name : "codeidaca",
     db_username : "postgres",
-    db_password: "admin",
+    db_password: "ganbatte",
     URL_DOMAIN : '/codeid',
     URL_IMAGE : '',
     URL_API : '/codeid/api',

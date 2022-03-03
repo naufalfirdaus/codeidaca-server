@@ -75,12 +75,11 @@ const initModels = (sequelize) => {
         as: "curriculum_materis",
         foreignKey: "cuma_curr_id",
     });
+    // ubah
     curriculum_reviews.belongsTo(curriculum, {
-        as: "cure_curr",
         foreignKey: "cure_curr_id",
     });
     curriculum.hasMany(curriculum_reviews, {
-        as: "curriculum_reviews",
         foreignKey: "cure_curr_id",
     });
     curriculum_materi.belongsTo(curriculum_materi, {
@@ -113,20 +112,35 @@ const initModels = (sequelize) => {
         foreignKey: "tapl_place_id",
     });
     user_roles.belongsTo(roles, {
+        as: "usro_role",
         foreignKey: "usro_role_id",
     });
-    roles.hasMany(user_roles, { foreignKey: "usro_role_id" });
+    roles.hasMany(user_roles, { as: "user_roles", foreignKey: "usro_role_id" });
+    // ubah
     talent_batch.belongsTo(talent, {
         as: "taba_tale",
         foreignKey: "taba_tale_id",
     });
+    // ubah
     talent.hasMany(talent_batch, {
-        as: "talent_batches",
         foreignKey: "taba_tale_id",
     });
     talent_placement.belongsTo(talent, {
-        as: "tapl_tale",
         foreignKey: "tapl_tale_id",
+    });
+    // tambah
+    talent.hasMany(batch, {
+        foreignKey: "batch_id",
+    });
+    batch.belongsTo(talent, {
+        foreignKey: "batch_id",
+    });
+    // tambah
+    talent.hasMany(instructor, {
+        foreignKey: "inst_id",
+    });
+    instructor.belongsTo(talent, {
+        foreignKey: "inst_id",
     });
     talent.hasMany(talent_placement, {
         as: "talent_placements",
@@ -148,20 +162,20 @@ const initModels = (sequelize) => {
         as: "talent_timelines",
         foreignKey: "tati_timeline_name",
     });
+    // ubah
     curriculum_reviews.belongsTo(users, {
-        as: "cure_user",
         foreignKey: "cure_user_id",
     });
     users.hasMany(curriculum_reviews, {
-        as: "curriculum_reviews",
         foreignKey: "cure_user_id",
     });
     talent.belongsTo(users, { as: "tale_user", foreignKey: "tale_user_id" });
     users.hasMany(talent, { as: "talents", foreignKey: "tale_user_id" });
     user_roles.belongsTo(users, {
+        as: "usro_user",
         foreignKey: "usro_user_id",
     });
-    users.hasMany(user_roles, { foreignKey: "usro_user_id" });
+    users.hasMany(user_roles, { as: "user_roles", foreignKey: "usro_user_id" });
 
     return {
         batch,
@@ -181,7 +195,6 @@ const initModels = (sequelize) => {
         users,
     };
 };
-
 const models = initModels(sequelize);
 
 export default models;

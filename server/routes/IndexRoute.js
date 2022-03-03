@@ -1,5 +1,11 @@
 import UserRoute from './UserRoute'
+import TestimoniRoute from "./TestimonialRoute"
+import InstructorRoute from "./InstructorRoute"
+import TalentRoute from "./TalentRoute"
 
 export default{
-    UserRoute
+    UserRoute,
+    TestimoniRoute,
+    InstructorRoute,
+    TalentRoute
 }

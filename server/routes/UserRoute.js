@@ -6,6 +6,7 @@ const router = Router();
 
 router.post("/signin",authJWT.authenticate,authJWT.login);
 router.post("/signup",IndexController.UserController.signup);
+router.get("/",IndexController.UserController.findAllRow);
 //router.post("/refreshtoken",authJWT.refreshToken)
 
 export default router;

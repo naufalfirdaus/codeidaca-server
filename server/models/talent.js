@@ -113,6 +113,14 @@ export default class talent extends Model {
         model: 'users',
         key: 'user_id'
       }
+    },
+    tale_status_timeline: {
+      type: DataTypes.STRING(15),
+      allowNull: true
+    },
+    tale_timeline_date: {
+      type: DataTypes.DATEONLY,
+      allowNull: true
     }
   }, {
     sequelize,
