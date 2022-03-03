@@ -6,8 +6,11 @@ const router = Router();
 // get
 
 // post
-router.post("/idle", IndexController.TalentPlacement.createSwitchIdle,
-    IndexController.TalentPlacement.UpdateStatus
+router.post("/", IndexController.TalentPlacement.statusPlace,
+    IndexController.TalentPlacement.talenPlacement,
+    IndexController.TalentPlacement.UpdateStatusPlace
 );
+router.post("/status", IndexController.TalentPlacement.createSwitchIdle,
+    IndexController.TalentPlacement.UpdateStatus,
 
 export default router;
