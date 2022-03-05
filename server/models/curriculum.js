@@ -49,6 +49,10 @@ export default class curriculum extends Model {
         model: 'instructor',
         key: 'inst_id'
       }
+    },
+    curr_price: {
+      type: DataTypes.STRING(20),
+      allowNull: true
     }
   }, {
     sequelize,
