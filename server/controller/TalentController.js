@@ -9,6 +9,7 @@ const findAllRows = async (req, res) => {
                 "tale_bootcamp",
                 "tale_photo",
                 "tale_status",
+                "tale_status_date",
                 "tale_status_timeline",
             ],
             where: { tale_status: "Talent" },
@@ -47,6 +48,8 @@ const findBySql = async (req, res) => {
             tale_fullname,
             tale_photo,
             tale_bootcamp,
+            tale_status,
+            tale_status_date,
             taba_batch_id,
             batch_name,
             batch_start_date,
@@ -58,6 +61,7 @@ const findBySql = async (req, res) => {
         inner join talent_batch tb on t.tale_id = tb.taba_batch_id
         inner join batch b on tb.taba_batch_id = b.batch_id
         inner join instructor i on b.batch_inst_id = i.inst_id
+        where tale_status = 'Talent'
         `,
         {
             type: sequelize.QueryTypes.SELECT,
@@ -118,13 +122,14 @@ const findBatch = async (req, res) => {
     return res.send(result);
 };
 
-const findTry = async (req, res) => {
+const findTalent = async (req, res) => {
     try {
         const result = await req.context.models.talent_batch.findAll({
             include: [
                 {
                     model: req.context.models.talent,
                     as: "taba_tale",
+
                     where: { tale_status: "Talent" },
                 },
                 {
@@ -148,5 +153,5 @@ export default {
     findBySql,
     findAllList,
     findBatch,
-    findTry,
+    findTalent,
 };
