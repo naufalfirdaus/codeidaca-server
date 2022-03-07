@@ -6,9 +6,6 @@ const router = Router();
 // get
 
 router.get("/", IndexController.CurriculumController.findAllRows);
-router.get("/:curr_type", IndexController.CurriculumController.findbyType)
-// router.get("/:curr_type", IndexController.CurriculumController.findRegular);
-// router.get("/:curr_type", IndexController.CurriculumController.findBerbayar);
-// router.get("/:id",IndexController.CurriculumController.findbyId);
-
+router.get("/regular", IndexController.CurriculumController.findRegular);
+router.get("/berbayar", IndexController.CurriculumController.findBerbayar);
 export default router;

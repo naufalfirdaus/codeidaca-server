@@ -15,19 +15,19 @@ const findAllRows = async (req, res) => {
 }
 
 
-const findbyType = async (req, res) => {
-    try {
-        const result = await sequelize.query("select curr_name, curr_title, curr_description, curr_duration,  curr_type, curr_price from curriculum ",  {
-            type: sequelize.QueryTypes.SELECT,
-            model: req.context.models.curriculum,
-            mapToModel: true, 
-            where: {curr_type:req.params.curr_type}
-        });
-        return res.send(result)
-    } catch (error) {
-        res.status(404).json({message : error.message})
-    }
-}
+// const findbyType = async (req, res) => {
+//     try {
+//         const result = await sequelize.query("select curr_name, curr_title, curr_description, curr_duration,  curr_type, curr_price from curriculum ",  {
+//             type: sequelize.QueryTypes.SELECT,
+//             model: req.context.models.curriculum,
+//             mapToModel: true, 
+//             
+//         });
+//         return res.send(result)
+//     } catch (error) {
+//         res.status(404).json({message : error.message})
+//     }
+// }
 
 // const findbyId = async (req, res) => {
 //     try {
@@ -83,7 +83,7 @@ const findBerbayar = async (req, res) => {
 
 export default {
     findAllRows,
-    findbyType,
+    // findbyType,
     findRegular,
     findBerbayar,
     // findbyId
