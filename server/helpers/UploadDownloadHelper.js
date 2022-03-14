@@ -95,15 +95,32 @@ const showProductImage = async (req, res) => {
         .pipe(res);
 }
 
+const showTalentPhoto = async (req, res) => {
+    const filename = req.params.filename;
+    const url = `${process.cwd()}/${config.UPLOAD_DIR}/${filename}`;
+    fs.createReadStream(url)
+        .on("error", () => responseNotFound(req, res))
+        .pipe(res);
+}
 
 function responseNotFound(req, res) {
     res.writeHead(404, { "Content-Type": "text/plain" });
     res.end("Not Found")
 }
 
+const showFile = async (req, res) => {
+    const filename = req.params.filename;
+    const url = `${process.cwd()}/${config.UPLOAD_DIR}/${filename}`;
+    fs.createReadStream(url)
+        .on("error", () => responseNotFound(req, res))
+        .pipe(res);
+}
 
 export default {
     uploadSingleFile,
     showProductImage,
-    uploadMultipleFile
+    showTalentPhoto,
+    uploadMultipleFile,
+    showFile,
+    
 }
