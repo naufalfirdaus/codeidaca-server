@@ -1,0 +1,58 @@
+import { sequelize } from "../models/init-models";
+
+const findAllRows = async (req, res) => {
+    try {
+        const result = await req.context.models.curriculum_reviews.findAll({
+            include: [
+                {
+                    model: req.context.models.curriculum,
+                    as: "cure_curr",
+                },
+                {
+                    model: req.context.models.users,
+                    as: "cure_user",
+                    include: {
+                        model: req.context.models.talent,
+                        as: "talents",
+                    },
+                },
+            ],
+        });
+        return res.send(result);
+    } catch (error) {
+        return res.sendStatus(404).json({ msg: "N0 DATA FOUND" });
+    }
+};
+
+const findBySql = async (req, res) => {
+    const result = await sequelize.query(
+        `select
+            cure_id,
+            cure_review,
+            cure_rating,
+            cure_user_id,
+            user_id,
+            user_name,
+            user_email,
+            tale_fullname,
+            tale_bootcamp,
+            tale_photo,
+            tale_position,
+            tale_user_id
+        from curriculum_reviews cr
+        inner join users u on cr.cure_user_id = u.user_id
+        inner join talent t on u.user_id = t.tale_user_id
+        `,
+        {
+            type: sequelize.QueryTypes.SELECT,
+            model: req.context.models.curriculum_reviews,
+            mapToModel: true,
+        }
+    );
+    return res.send(result);
+};
+
+export default {
+    findAllRows,
+    findBySql
+};
