@@ -3,7 +3,7 @@ import { sequelize } from "../models/init-models";
 
 const findAllRows = async (req, res) => {
     try {
-        const result = await sequelize.query("select curr_name, curr_title, curr_description, curr_duration, curr_type, curr_price from curriculum ",  {
+        const result = await sequelize.query("select curr_id, curr_name, curr_title, curr_description, curr_duration, curr_type, curr_price from curriculum ",  {
             type: sequelize.QueryTypes.SELECT,
             model: req.context.models.curriculum,
             mapToModel: true
@@ -48,7 +48,7 @@ const findAllRows = async (req, res) => {
 const findRegular = async (req, res) => {
     try {
         const result = await sequelize.query(            
-        `select curr_name, curr_title, curr_description, 
+        `select curr_id, curr_name, curr_title, curr_description, 
         curr_duration, curr_type, curr_price, cure_rating from curriculum cu inner join curriculum_reviews cr 
         on cu.curr_id = cr.cure_curr_id where curr_type = 'Regular'`,  {
             type: sequelize.QueryTypes.SELECT,
@@ -65,7 +65,7 @@ const findRegular = async (req, res) => {
 const findBerbayar = async (req, res) => {
     try {
         const result = await sequelize.query(
-            `select curr_name, curr_title, curr_description, 
+            `select curr_id, curr_name, curr_title, curr_description, 
             curr_duration, curr_type, curr_price, cure_rating from curriculum cu inner join curriculum_reviews cr 
             on cu.curr_id = cr.cure_curr_id where curr_type = 'Berbayar'`,  
             {

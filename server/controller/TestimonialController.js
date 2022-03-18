@@ -4,18 +4,7 @@ const findAllRows = async (req, res) => {
     try {
         const result = await req.context.models.curriculum_reviews.findAll({
             include: [
-                {
-                    model: req.context.models.curriculum,
-                    as: "cure_curr",
-                },
-                {
-                    model: req.context.models.users,
-                    as: "cure_user",
-                    include: {
-                        model: req.context.models.talent,
-                        as: "talents",
-                    },
-                },
+            {all : true}
             ],
         });
         return res.send(result);

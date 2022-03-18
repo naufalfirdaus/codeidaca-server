@@ -5,6 +5,7 @@ import _batch from  "./batch.js";
 import _client from  "./client.js";
 import _curriculum from  "./curriculum.js";
 import _curriculum_materi from  "./curriculum_materi.js";
+import _curriculum_reviews from  "./curriculum_reviews.js";
 import _instructor from  "./instructor.js";
 import _placement from  "./placement.js";
 import _roles from  "./roles.js";
@@ -38,6 +39,7 @@ const initModels = (sequelize) => {
   const client = _client.init(sequelize, DataTypes);
   const curriculum = _curriculum.init(sequelize, DataTypes);
   const curriculum_materi = _curriculum_materi.init(sequelize, DataTypes);
+  const curriculum_reviews = _curriculum_reviews.init(sequelize, DataTypes);
   const instructor = _instructor.init(sequelize, DataTypes);
   const placement = _placement.init(sequelize, DataTypes);
   const roles = _roles.init(sequelize, DataTypes);
@@ -57,6 +59,8 @@ const initModels = (sequelize) => {
   curriculum.hasMany(curriculum_materi, { as: "curriculum_materis", foreignKey: "cuma_curr_id"});
   curriculum_materi.belongsTo(curriculum_materi, { as: "cuma_cuma", foreignKey: "cuma_cuma_id"});
   curriculum_materi.hasMany(curriculum_materi, { as: "curriculum_materis", foreignKey: "cuma_cuma_id"});
+  curriculum_reviews.belongsTo(curriculum, { as: "cure_curr", foreignKey: "cure_curr_id"});
+  curriculum.hasMany(curriculum_reviews, { as: "curriculum_reviews", foreignKey: "cure_curr_id"});
   batch.belongsTo(instructor, { as: "batch_inst", foreignKey: "batch_inst_id"});
   instructor.hasMany(batch, { as: "batches", foreignKey: "batch_inst_id"});
   curriculum.belongsTo(instructor, { as: "curr_inst", foreignKey: "curr_inst_id"});
@@ -65,6 +69,8 @@ const initModels = (sequelize) => {
   placement.hasMany(talent_placement, { as: "talent_placements", foreignKey: "tapl_place_id"});
   user_roles.belongsTo(roles, {  foreignKey: "usro_role_id"});
   roles.hasMany(user_roles, {  foreignKey: "usro_role_id"});
+  curriculum_reviews.belongsTo(users, { as: "cure_user", foreignKey: "cure_user_id"});
+  users.hasMany(curriculum_reviews, { as: "curriculum_reviews", foreignKey: "cure_user_id"});
   talent_batch.belongsTo(talent, { as: "taba_tale", foreignKey: "taba_tale_id"});
   talent.hasMany(talent_batch, { as: "talent_batches", foreignKey: "taba_tale_id"});
   talent_placement.belongsTo(talent, { as: "tapl_tale", foreignKey: "tapl_tale_id"});
@@ -83,6 +89,7 @@ const initModels = (sequelize) => {
     client,
     curriculum,
     curriculum_materi,
+    curriculum_reviews,
     instructor,
     placement,
     roles,

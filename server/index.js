@@ -43,9 +43,9 @@ app.use(async (req,res,next) =>{
 
 // call routes
 app.use(config.URL_DOMAIN+"/auth",routes.UserRoute)
-app.use(process.env.URL_API + "/testimoni", routes.TestimoniRoute);
-app.use(process.env.URL_API + "/instructor", routes.InstructorRoute);
-app.use(process.env.URL_API + "/talentpage", routes.TalentRoute);
+app.use(config.URL_API + "/testimoni", routes.TestimoniRoute);
+app.use(config.URL_API + "/instructor", routes.InstructorRoute);
+app.use(config.URL_API + "/talentpage", routes.TalentRoute);
 
 app.use(config.URL_API+"/curriculum", routes.CurriculumRoute)
 app.use(config.URL_API+"/review", routes.ReviewRoute)
@@ -64,8 +64,8 @@ app.use(config.URL_API + "/app", routes.AppSettingRoute)
 
 app.use(config.URL_API+"/apply",routes.TalentesRoute)
 
-app.use(config.URL_DOMAIN+"/bootcamp",routes.CampDetailRoute)
-app.use(config.URL_DOMAIN+"/batchs",routes.BatchesRoute)
+app.use(config.URL_API+"/bootcamp",routes.CampDetailRoute)
+app.use(config.URL_API+"/batchs",routes.BatchesRoute)
 //use middleware to handle error from others modules
 app.use(middleware.handleError);
 app.use(middleware.notFound);
